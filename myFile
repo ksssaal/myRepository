@@ -1,0 +1,462 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Fraction f1 = new Fraction(2, 6);
+        f1.Print();
+
+        Fraction f2 = new Fraction("-2/3");
+        f2.Print();
+
+        // ------  operations with Fraction param
+
+        Fraction f3 = f1.Add(f2);
+        f3.Print();
+
+        // ------ operations with string param
+
+        Fraction f4 = f1.Add("2/3");
+        f4.Print();
+
+        // ------- operations with operators
+
+        Fraction f5 = f1 + f2;
+        f5.Print();
+
+        Fraction f6 = f1 + "1/3";
+        f6.Print();
+
+        Fraction f7 = "1/2" + f1;
+        f7.Print();
+        // ------- exception test
+        try
+        {
+            Fraction f9 = f1 + "1/0";
+            f9.Print();
+        }
+        catch(Exception send)
+        {
+            Console.WriteLine(send.Message);
+        }
+
+        Fraction f10 = f1.Mult(f3);
+        f10.Print();
+
+
+        Fraction f11 = f10.Mult("3/4");
+        f11.Print();
+
+        Fraction f12 = f10 * f3;
+        f12.Print();
+
+        Fraction f13 = f12 * "1/3";
+        f13.Print();
+
+        Fraction f14 =  "2/5" * f11;
+        f14.Print();
+
+        Fraction f15 = f14.Divide(f11);
+        f15.Print();
+
+
+        Fraction f16 = f11.Divide("3/7");
+        f16.Print();
+
+        Fraction f17 = f10 / f13;
+        f17.Print();
+
+        Fraction f18 = f16 / "2/3";
+        f18.Print();
+
+        Fraction f19 = "2/7" / f12;
+        f19.Print();
+
+        Fraction f20 = f19.Remove(f3);
+        f20.Print();
+
+
+        Fraction f21 = f17.Remove("3/5");
+        f21.Print();
+
+        Fraction f22 = f15 - f6;
+        f22.Print();
+
+        Fraction f23 = f12 - "1/4";
+        f23.Print();
+
+        Fraction f24 = "2/9" - f11;
+        f24.Print();
+
+        f24.Equal(f1);
+        f23.Equal("2/3");
+
+        bool b1 = f11 == f3;
+        bool b2 = f12 == "2/3";
+        bool b3 = "2/3" == f1;
+
+        bool a1 = f6.NotEqual(f24);
+        bool a2 = f11.NotEqual("2/3");
+        bool a3 = f1 != f2;
+        bool a4 = f24 != "4/7";
+        bool a5 = "5/9" != f22;
+
+        bool b4 = f4.More(f1);
+        bool b5 = f3.More("2/5");
+        bool b6 = f5 > f6;
+        bool b7 = f3 > "3/7";
+        bool b8 = "5/6" > f10;
+
+        bool b9 = f4.Less(f6);
+        bool b10 = f6.Less("3/5");
+        bool b11 = f11 < f6;
+        bool b12 = f3 < "1/5";
+        bool b13 = "5/6" < f14;
+
+        bool b14 = f16.MoreOrEquals(f11);
+        bool b15 = f14.MoreOrEquals("7/9");
+        bool b16 = f18 >= f13;
+        bool b17 = f15 >= "5/9";
+        bool b18 = "13/17" >= f19;
+
+        bool b19 = f14.LessOrEquals(f21);
+        bool b20 = f23.LessOrEquals("2/11");
+        bool b21 = f7 <= f11;
+        bool b22 = f20 <= "4/7";
+        bool b23 = "5/6" <= f22;
+    }
+}
+
+class Fraction
+{
+    private int numerator;
+    private int denominator;
+
+    public Fraction(int numerator, int denominator)
+    {
+        Init(numerator, denominator);
+    }
+
+    public Fraction(string fractionString)
+    {
+        string[] arr = fractionString.Split('/');
+        Init(int.Parse(arr[0]), int.Parse(arr[1]));
+    }
+
+    private void Init(int numerator, int denominator)
+    {
+        this.numerator = numerator;
+
+        if (denominator != 0)
+            this.denominator = Math.Abs(denominator);
+        else
+            throw new Exception("Invalid Denominator");
+
+        Reduce();
+    }
+
+    public void Print()
+    {
+        Console.WriteLine(numerator + "/" + denominator);
+    }
+
+    // ------  operations with Fraction param
+    
+
+    public Fraction Add(Fraction f)
+    {
+        int newNumerator = numerator * f.denominator + f.numerator * denominator;
+        int newDenominator = denominator * f.denominator;
+        Fraction newFraction = new Fraction(newNumerator, newDenominator);
+        return newFraction;
+    }
+
+    // ------ operations with string param
+
+    public Fraction Add(string s)
+    {
+        Fraction newFraction = new Fraction(s);
+        return Add(newFraction);
+    }
+
+    // ------ operators
+
+    public static Fraction operator +(Fraction leftF, Fraction rightF)
+    {
+        return leftF.Add(rightF);
+    }
+
+    public static Fraction operator +(Fraction leftF, string rightF)
+    {
+        return leftF.Add(rightF);
+    }
+
+    public static Fraction operator +(string leftF, Fraction rightF)
+    {
+        return rightF.Add(leftF);
+    }
+
+    public Fraction Mult(Fraction f)
+    {
+        int newNumerator = numerator * f.numerator;
+        int newDenominator = denominator * f.denominator;
+        Fraction newFraction = new Fraction(newNumerator, newDenominator);
+        return newFraction;
+
+    }
+
+    public Fraction Mult(string s)
+    {
+        Fraction newFraction = new Fraction(s);
+        return Mult(newFraction);
+    }
+
+    public static Fraction operator *(Fraction leftF, Fraction rightF)
+    {
+        return leftF.Mult(rightF);
+    }
+
+    public static Fraction operator *(Fraction leftF, string rightF)
+    {
+        return leftF.Mult(rightF);
+    }
+
+    public static Fraction operator *(string leftF, Fraction rightF)
+    {
+        return rightF.Mult(leftF);
+    }
+
+    public Fraction Remove(Fraction f)
+    {
+        int newNumerator = numerator * f.denominator - f.numerator * denominator;
+        int newDenominator = denominator * f.denominator;
+        Fraction newFraction = new Fraction(newNumerator, newDenominator);
+        return newFraction;
+    }
+    
+    public Fraction Remove(string s)
+    {
+        Fraction newFraction = new Fraction(s);
+        return Remove(newFraction);
+    }
+
+    public static Fraction operator -(Fraction leftF, Fraction rightF)
+    {
+        return leftF.Remove(rightF);
+    }
+
+    public static Fraction operator -(Fraction leftF, string rightF)
+    {
+        return leftF.Remove(rightF);
+    }
+
+    public static Fraction operator -(string leftF, Fraction rightF)
+    {
+        return rightF.Remove(leftF);
+    }
+
+    public Fraction Divide(Fraction f)
+    {
+        int newNumerator = numerator * f.denominator;
+        int newDenominator = denominator * f.numerator;
+        Fraction newFraction = new Fraction(newNumerator, newDenominator);
+        return newFraction;
+    }
+
+    public Fraction Divide(string s)
+    {
+        Fraction newfraction = new Fraction(s);
+        return Divide(newfraction);
+    }
+
+    public static Fraction operator /(Fraction leftF, Fraction rightF)
+    {
+        return leftF.Divide(rightF);
+    }
+
+    public static Fraction operator /(Fraction leftF, string rightF)
+    {
+        return leftF.Divide(rightF);
+    }
+
+    public static Fraction operator /(string leftF, Fraction rightF)
+    {
+        return rightF.Divide(leftF);
+    }
+
+
+    public bool Equal(Fraction a)
+    {
+        if (a.numerator == numerator && a.denominator == denominator) Console.WriteLine(a.numerator + "/" + a.denominator + " равна " + numerator + "/" + denominator);
+        else Console.WriteLine(a.numerator + "/" + a.denominator + " не равна " + numerator + "/" + denominator);
+        return a.numerator == numerator && a.denominator == denominator;
+    }
+    public bool Equal(string s)
+    {
+        return Equal(new Fraction(s));
+    }
+    public bool NotEqual(Fraction a)
+    {
+        if (a.numerator != numerator && a.denominator != denominator) Console.WriteLine(a.numerator + "/" + a.denominator + " не равна " + numerator + "/" + denominator);
+        else Console.WriteLine(a.numerator + "/" + a.denominator + " не равна " + numerator + "/" + denominator);
+        return a.numerator != numerator && a.denominator != denominator;
+    }
+    public bool NotEqual(string s)
+    {
+        return NotEqual(new Fraction(s));
+    }
+    public bool More(Fraction a)
+    {
+        if (a.numerator * denominator > numerator * a.denominator) Console.WriteLine(a.numerator + "/" + a.denominator + " больше " + numerator + "/" + denominator);
+        else Console.WriteLine(a.numerator + "/" + a.denominator + " меньше " + numerator + "/" + denominator);
+
+        return a.numerator * denominator > numerator * a.denominator;
+    }
+    public bool More(string s)
+    {
+        return More(new Fraction(s));
+    }
+    public bool Less(Fraction a)
+    {
+        if (a.numerator * denominator < numerator * a.denominator) Console.WriteLine(a.numerator + "/" + a.denominator + " меньше " + numerator + "/" + denominator);
+        else Console.WriteLine(a.numerator + "/" + a.denominator + " больше " + numerator + "/" + denominator);
+        return a.numerator * denominator < numerator * a.denominator;
+    }
+    public bool Less(string s)
+    {
+        return Less(new Fraction(s));
+    }
+    public bool MoreOrEquals(Fraction a)
+    {
+        if (a.numerator * denominator >= numerator * a.denominator) Console.WriteLine(a.numerator + "/" + a.denominator + " больше или равна " + numerator + "/" + denominator);
+        else Console.WriteLine(a.numerator + "/" + a.denominator + " меньше или равна " + numerator + "/" + denominator);
+        return a.numerator * denominator >= numerator * a.denominator;
+    }
+    public bool MoreOrEquals(string s)
+    {
+        return MoreOrEquals(new Fraction(s));
+    }
+    public bool LessOrEquals(Fraction a)
+    {
+        if (a.numerator * denominator <= numerator * a.denominator) Console.WriteLine(a.numerator + "/" + a.denominator + " меньше или равна " + numerator + "/" + denominator);
+        else Console.WriteLine(a.numerator + "/" + a.denominator + " больше или равна " + numerator + "/" + denominator); 
+        return a.numerator * denominator <= numerator * a.denominator;
+    }
+    public bool LessOrEquals(string s)
+    {
+        return LessOrEquals(new Fraction(s));
+    }
+
+    public static bool operator ==(Fraction leftF, Fraction rightF)
+    {
+        return leftF.Equal(rightF);
+    }
+
+    public static bool operator ==(Fraction leftF, string rightF)
+    {
+        return leftF.Equal(new Fraction(rightF));
+    }
+
+    public static bool operator ==(string leftF, Fraction rightF)
+    {
+        return rightF.Equal(new Fraction(leftF));
+    }
+
+    public static bool operator !=(Fraction leftF, Fraction rightF)
+    {
+        return leftF.NotEqual(rightF);
+    }
+
+    public static bool operator !=(Fraction leftF, string rightF)
+    {
+        return leftF.NotEqual(new Fraction(rightF));
+    }
+
+    public static bool operator !=(string leftF, Fraction rightF)
+    {
+        return rightF.NotEqual(new Fraction(leftF));
+    }
+
+    public static bool operator >(Fraction leftF, Fraction rightF)
+    {
+        return leftF.More(rightF);
+    }
+
+    public static bool operator >(Fraction leftF, string rightF)
+    {
+        return leftF.More(new Fraction(rightF));
+    }
+
+    public static bool operator >(string leftF, Fraction rightF)
+    {
+        return rightF.More(new Fraction(leftF));
+    }
+
+    public static bool operator <(Fraction leftF, Fraction rightF)
+    {
+        return leftF.Less(rightF);
+    }
+
+    public static bool operator <(Fraction leftF, string rightF)
+    {
+        return leftF.Less(new Fraction(rightF));
+    }
+
+    public static bool operator <(string leftF, Fraction rightF)
+    {
+        return rightF.Less(new Fraction(leftF));
+    }
+
+    public static bool operator >=(Fraction leftF, Fraction rightF)
+    {
+        return leftF.MoreOrEquals(rightF);
+    }
+
+    public static bool operator >=(Fraction leftF, string rightF)
+    {
+        return leftF.MoreOrEquals(new Fraction(rightF));
+    }
+
+    public static bool operator >=(string leftF, Fraction rightF)
+    {
+        return rightF.MoreOrEquals(new Fraction(leftF));
+    }
+
+    public static bool operator <=(Fraction leftF, Fraction rightF)
+    {
+        return leftF.LessOrEquals(rightF);
+    }
+
+    public static bool operator <=(Fraction leftF, string rightF)
+    {
+        return leftF.LessOrEquals(new Fraction(rightF));
+    }
+
+    public static bool operator <=(string leftF, Fraction rightF)
+    {
+        return rightF.LessOrEquals(new Fraction(leftF));
+    }
+
+
+    private void Reduce()
+    {
+        int gcd = GCD(numerator, denominator);
+        numerator /= gcd;
+        denominator /= gcd;
+    }
+
+    private int GCD(int a, int b)
+    {
+        a = Math.Abs(a);
+        b = Math.Abs(b);
+        while (b != 0)
+        {
+            var t = b;
+            b = a % b;
+            a = t;
+        }
+        return a;
+    }
+
+}
